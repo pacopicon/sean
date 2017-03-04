@@ -3,6 +3,7 @@ var http = require('http'),
     fs = require('fs');
 
 function load_album_list(callback) {
+
   fs.readdir("albums", (err, files) => {
     if (err) {
       callback(err);
@@ -25,7 +26,7 @@ function load_album_list(callback) {
         if (stats.isDirectory()) {
           only_dirs.push(files[index]);
         }
-        iterator(index + 1);
+        iterator(index + 1)
       });
 
     }
