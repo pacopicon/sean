@@ -24,7 +24,7 @@ function load_album_list(callback) {
           return;
         }
         if (stats.isDirectory()) {
-          var obj = {name: files[index] };
+          var obj = { name: files[index] };
           only_dirs.push(obj);
         }
         iterator(index + 1)
@@ -47,6 +47,7 @@ function load_album(album_name, callback) {
       }
       return;
     }
+
     var only_files = [];
     var path = `albums/${album_name}/`
 
@@ -68,6 +69,7 @@ function load_album(album_name, callback) {
         }
         iterator(index+1);
       });
+
     }
     iterator(0);
   });
@@ -109,20 +111,30 @@ function handle_get_album(req, res) {
   });
 }
 
+function make_error(err, msg) {
+  var e = new Error(msg);
+  e.code = err;
+  return e;
+}
 
+function send_success(res, data) {
+  res.writeHead(200, {"Content-Type" : "application/json"});
+  var output = {error: null, data: data};
+  res.end(JSON.stringify(output) + "\n");
+}
 
-load_album_list((err, albums) => {
-    if (err) {
-      res.writeHead(500, {"Content-Type": "application/json"});
-      res.end(JSON.stringify(err) + "\n");
-      return;
-    }
+function send_failure(res, server_code, err) {
+  var code = (err.code) ? err.code : err.name;
+  res.writeHead(server_code, {"Content-Type" : "application/json"});
+  res.end(JSON.stringify({error: code, message: err.message}) + "\n");
+}
 
-    var out = {error: null,
-                data: {albums: albums}};
-    res.writeHead(200, {"Content-Type": "application/json"});
-    res.end(JSON.stringify(out) + "\n");
-  });
+function invalid_resource() {
+  return make_error("invalid_resource", "the requested resource does not exist.");
+}
+
+function no_such_album() {
+  return make_error("no_such_album", "The specified album does not exist");
 }
 
 var s = http.createServer(handle_incoming_request);
