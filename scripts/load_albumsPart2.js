@@ -18,17 +18,19 @@ function load_album_list(callback) {
         return;
       }
 
-        fs.stat("albums/" + files[index], (err, stats) => {
-          if (err) {
-            callback(make_error("file_error", JSON.stringify(err)));
-            return;
-          }
-          if (stats.isDirectory()) {
-            var obj = { name: files[index] };
-            only_dirs.push(obj);
-          }
-          iterator(index + 1)
-        });
+      fs.stat("albums/" + files[index], (err, stats) => {
+        if (err) {
+          callback(make_error("file_error", JSON.stringify(err)));
+          return;
+        }
+        console.log("is stats a directory?: " + stats.isDirectory());
+        if (stats.isDirectory()) {
+          var obj = { name: files[index] };
+          only_dirs.push(obj);
+          console.log("only_dirs: " + only_dirs);
+        }
+        iterator(index + 1)
+      });
     }
     iterator(0);
   });
@@ -62,9 +64,11 @@ function load_album(album_name, callback) {
           callback(make_error("file_error", JSON.stringify(err)));
           return;
         }
+        console.log("is stats a file?: " + stats.isFile());
         if (stats.isFile()) {
           var obj = { filename: files[index], desc: files[index] };
           only_files.push(obj);
+          console.log("only_files: " + only_files);
         }
         iterator(index + 1)
       });
