@@ -1,0 +1,6 @@
+Node.js in Action by Manning
+
+
+Chris' e-mail: christoph.ding@gmail.com // e-mail Chris if you would like to work on Node.js
+
+--E-mail: Chris for ReactJS spreadsheet
